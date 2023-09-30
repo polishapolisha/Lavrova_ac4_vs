@@ -65,8 +65,12 @@ void add_pipe(Pipe pipes[], int& pipe_num, const int& max_pipe)
         cout << "change later" << endl;
         return;
         Pipe& new_pipe = pipes[pipe_num];
-        
+        cout << "Enter pipe name" << endl;
         new_pipe.pipe_name = string_input();
-        new
+        cout << "Enter pipe diameter" << endl;
+        new_pipe.pipe_diameter = int_input();
+        cout << "Enter pipe lenght" << endl;
+        new_pipe.pipe_lenght = double_input();
+
     }
 }
