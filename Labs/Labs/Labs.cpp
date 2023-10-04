@@ -1,5 +1,7 @@
 ﻿#include <iostream>
 #include <string>
+#include <fstream>
+
 using namespace std;
 
 
@@ -85,7 +87,8 @@ string string_input()
     return str;
 }
 
-Pipe pipe_input() {
+Pipe pipe_input() 
+{
     Pipe new_pipe;
     cout << "enter pipe name: ";
     cin.ignore();
@@ -99,7 +102,8 @@ Pipe pipe_input() {
     return new_pipe;
 }
 
-CS cs_input() {
+CS cs_input() 
+{
     CS new_cs;
     cout << "enter station name ";
     cin.ignore();
@@ -112,7 +116,8 @@ CS cs_input() {
     return new_cs;
 }
 
-void pipe_output(const Pipe& new_pipe) {
+void pipe_output(const Pipe& new_pipe) 
+{
     if (new_pipe.pipe_name.empty()) {
         cout << "no pipe found";
     }
@@ -125,14 +130,94 @@ void pipe_output(const Pipe& new_pipe) {
 };
 
 
-void station_output(const CS& new_cs) {
-    if (new_cs.CS_name.empty()) {
+void station_output(const CS& new_cs) 
+{
+    if (new_cs.CS_name.empty()) 
+    {
         cout << "no station found";
     }
-    else {
+    else 
+    {
         cout << "station name is " << new_cs.CS_name << endl;
         cout << "total number of workshops: " << new_cs.num_of_workshops << endl;
         cout << "number of workshops in work: " << new_cs.num_of_working << endl;
         cout << "eff of the station: " << new_cs.effectiveness << endl;
     }
 };
+
+
+void pipe_change_status(Pipe& new_pipe) 
+{
+    new_pipe.is_pipe_under_repair = !new_pipe.is_pipe_under_repair;
+    cout << "Pipe status has been changed" << endl;
+    cout << "Pipe is under repair. It's  " << new_pipe.is_pipe_under_repair << endl;
+}
+
+
+void station_change_status(CS& new_cs) 
+{
+    cout << "the number of workshops: " << new_cs.num_of_workshops << endl;
+    cout << "the number of working workshops: " << new_cs.num_of_working << endl;
+    cout << "enter new number of working workshops: ";
+    new_cs.num_of_working = int_input(new_cs.num_of_working);
+    while (new_cs.num_of_workshops < new_cs.num_of_working) {
+        cout << "The number of working workshops cannot be more than the total number of workshops" << endl << "Try again ";
+        new_cs.num_of_working = int_input(new_cs.num_of_working);
+    }
+}
+
+
+void write_pipe_file(Pipe new_pipe)        //не уверена(
+{
+    ofstream file_out;
+    file_out.open("file.txt");
+        if (!new_pipe.pipe_name.empty()) 
+        {
+                if (file_out.is_open()) {
+                    file_out << "pipe: " << endl;
+                    file_out << new_pipe.pipe_name << endl << new_pipe.pipe_length << endl
+                        << new_pipe.pipe_diameter << endl << new_pipe.is_pipe_under_repair << endl;
+                }
+                else {
+                    cout << "couldnt open file" << endl;
+                }
+                file_out.close();
+        }
+        else 
+        {
+                cout << "no pipe found" << endl;
+        }
+}
+
+void write_cs_file(CS new_cs, Pipe new_pipe) 
+{
+    ofstream file_out;
+
+    if (new_pipe.pipe_name.empty()) 
+    {
+        file_out.open("file.txt");
+    }
+    else 
+    {
+        file_out.open("file.txt", ofstream::app);
+    }
+
+    if (!new_cs.CS_name.empty()) 
+    {
+        if (file_out.is_open()) 
+        {
+            file_out << "CS: " << endl;
+            file_out << new_cs.CS_name << endl << new_cs.num_of_workshops
+                        << endl << new_cs.num_of_working << endl << new_cs.effectiveness << endl;
+        }
+        else 
+        {
+            cout << "couldnt open file" << endl;
+        }
+        file_out.close();
+    }
+    else 
+    {
+        cout << "no CS found" << endl;
+    }
+}
