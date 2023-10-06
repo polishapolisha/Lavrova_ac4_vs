@@ -9,7 +9,7 @@ struct Pipe
 {
     string pipe_name;
     double pipe_length;
-    int pipe_diameter;
+    double pipe_diameter;
     bool is_pipe_under_repair;
 };
 
@@ -19,101 +19,90 @@ struct CS
     string CS_name;
     int num_of_workshops;
     int num_of_working;
-    char effectiveness;
+    string effectiveness;
 };
 
-void string1_input(string& x)
+void string_input(string& x) 
 {
-    cout << "Enter a, b or c to describe effectivenes: ";
     cin >> x;
-  
-    while (!(x >= "A" && x <= "C" && x.length() == 1)) //написала в '', а не в "" потому что ''--char, "" -- const char
+    while (!(x >= "A" && x <= "C" && x.length() == 1)) 
+    {
+        cout << "Try again " << endl;
+        cin >> x;
+    }
+}
+
+
+void bool_input(bool& x) 
+{
+    cin >> x;
+    while (cin.fail() || cin.peek() != '\n')
     {
         cin.clear();
         cin.ignore(10000, '\n');
-        cout << "incorrect input! try again " << endl;
+        cout << "Try again!" << endl;
         cin >> x;
     }
-
 }
 
-
-bool bool_input(bool& x) {
-  //  cout << "Enter 1 if True. Enter 0 if False" << endl;
+void int_input(int& x) 
+{
     cin >> x;
-    while (cin.fail() || x < 0 || x > 1  || cin.peek() != '\n' || cin.peek() == ' ') {
+    while (cin.fail() || x < 0 || cin.peek() != '\n' || cin.peek() == ' ')
+    {
         cin.clear();
         cin.ignore(10000, '\n');
-        cout << "Incorrect input! try again ";
+        cout << "Try again" << endl;
         cin >> x;
     }
-    return x;
-};
-
-int int_input(int min = 0, int max = 1000)
-{
-    int inum;
-    while ((!(cin >> inum) || inum > max || inum < min))
-        {
-        cout << "Your number doesn'n fit. Please enter another number" << endl;
-        cin.clear();
-        cin.ignore(1000, '\n');
-        }
-    return inum;
 };
 
 
-double double_input(int min = 0, int max = 100000)
+void double_input(double& x) 
 {
-    double dnum;
-    while ((!(cin >> dnum) || dnum > max || dnum < min))
+    cin >> x;
+    while (cin.fail() || x < 0 || cin.peek() != '\n')
     {
-        cout << "Your number doesn'n fit. Please enter another number" << endl;
         cin.clear();
-        cin.ignore(100000, '\n');
+        cin.ignore(10000, '\n');
+        cout << "Try again" << endl;
+        cin >> x;
     }
-    return dnum;
 }
 
 
-string string_input()
-{
-    string str;
-    for (;;) {
-        getline(cin, str);
-        if (!str.empty()) {
-            return str;
-        }
-    }
-    return str;
-}
 
 Pipe pipe_input() 
 {
     Pipe new_pipe;
-    cout << "enter pipe name: ";
+    cout << "Enter pipe name: " << endl;
     cin.ignore();
-    new_pipe.pipe_name = string_input();
-    cout << "enter pipe length: ";
-    new_pipe.pipe_length = double_input();
-    cout << "enter pipe diameter: ";
-    new_pipe.pipe_diameter = int_input(0, new_pipe.pipe_length);
-    cout << "is the pipe under repair? (1 - yes, 0 - no): ";
+    getline(cin, new_pipe.pipe_name);
+    cout << "Enter pipe length: " << endl;
+    double_input(new_pipe.pipe_length);
+    cout << "Enter pipe diameter: " << endl;
+    double_input(new_pipe.pipe_diameter);
+    cout << "Is the pipe being repaired? (1 - yes, 0 - no): " << endl;
     bool_input(new_pipe.is_pipe_under_repair);
     return new_pipe;
 }
-
 CS cs_input() 
 {
     CS new_cs;
-    cout << "enter cs name ";
+    cout << "Enter the name of the cs: " << endl;
     cin.ignore();
-    new_cs.CS_name = string_input();
-    cout << "enter the number of workshops ";
-    new_cs.num_of_workshops = int_input(0,10000);
-    cout << "enter the number of workshops in work ";
-    new_cs.num_of_working = int_input(0, new_cs.num_of_workshops);
-    string1_input(new_cs.effectiveness);
+    getline(cin, new_cs.CS_name);
+    cout << "Enter the number of workshops: " << endl;
+    int_input(new_cs.num_of_workshops);
+    cout << "Enter the number of working workshops " << endl;
+    int_input(new_cs.num_of_working);
+    while (new_cs.num_of_workshops < new_cs.num_of_workshops) 
+    {
+        cout << "The number of working cs can't be more than the total number of cs" << endl << "Try again" << endl;
+        int_input(new_cs.num_of_working);
+    }
+    cout << "Enter effectiveness from A to C: " << endl;
+    string_input(new_cs.effectiveness);
     return new_cs;
 }
 
@@ -149,21 +138,36 @@ void cs_output(const CS& new_cs)
 
 void pipe_change_status(Pipe& new_pipe) 
 {
-    new_pipe.is_pipe_under_repair = !new_pipe.is_pipe_under_repair;
-    cout << "Pipe status has been changed" << endl;
-    cout << "Pipe is under repair. It's  " << new_pipe.is_pipe_under_repair << endl;
+    if (new_pipe.pipe_name.empty()) 
+    {
+        cout << "not found" << endl;
+    }
+    else
+    {
+        new_pipe.is_pipe_under_repair = !new_pipe.is_pipe_under_repair;
+        cout << "pipe status has been changed" << endl;
+        cout << "pipe is under repair. It's  " << new_pipe.is_pipe_under_repair << endl;
+    }
 }
 
 
 void cs_change_status(CS& new_cs) 
 {
-    cout << "the number of workshops: " << new_cs.num_of_workshops << endl;
-    cout << "the number of working workshops: " << new_cs.num_of_working << endl;
-    cout << "enter new number of working workshops: ";
-    new_cs.num_of_working = int_input(new_cs.num_of_working);
-    while (new_cs.num_of_workshops < new_cs.num_of_working) {
-        cout << "The number of working workshops cannot be more than the total number of workshops" << endl << "Try again ";
-        new_cs.num_of_working = int_input(new_cs.num_of_working);
+    if (new_cs.CS_name.empty()) 
+    {
+        cout << "not found" << endl;
+    }
+    else
+    {
+        cout << "the number of workshops: " << new_cs.num_of_workshops << endl;
+        cout << "the number of working workshops: " << new_cs.num_of_working << endl;
+        cout << "enter new number of working workshops: ";
+        int_input(new_cs.num_of_working);
+        while (new_cs.num_of_workshops < new_cs.num_of_working) 
+        {
+            cout << "The number of working workshops cannot be more than the total number of workshops" << endl << "Try again ";
+            int_input(new_cs.num_of_working);
+        }
     }
 }
 
@@ -296,7 +300,7 @@ int main()
         cout << "0) exit" << endl;
         cout << "------------------" << endl;
         cout << "enter a number ";
-        chs = int_input();
+        int_input(chs);
         switch (chs) {
         case 1: {
             new_pipe = pipe_input();
